@@ -1,9 +1,30 @@
 package Mws
 
 import (
-	"GoRepositories/Mongo"
 	"time"
+
+	"github.com/chadit/GoRepositories/Mongo"
+
+	"gopkg.in/mgo.v2/bson"
 )
+
+// ProductTrackings array of ProductTracking
+type ProductTrackings []ProductTracking
+
+// Len -lenth of sort
+func (p ProductTrackings) Len() int {
+	return len(p)
+}
+
+// Less - kdkd
+func (p ProductTrackings) Less(i, j int) bool {
+	return p[i].RegularAmount < p[j].RegularAmount
+}
+
+// Swap - lll
+func (p ProductTrackings) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
 
 // ProductTracking model
 type ProductTracking struct {
@@ -89,6 +110,21 @@ func (p *ProductTracking) InitProductTracking(asin string) {
 	p.ID = Mongo.GetNewBsonIDString()
 	p.DateCreated = eventTime
 	p.DateModified = eventTime
+}
+
+// SetupSaveProductTracking updates the user object modified uers
+func (p *ProductTracking) SetupSaveProductTracking(tenantID string) {
+	eventTime := time.Now().UTC()
+	if p.ID == "" {
+		p.ID = bson.NewObjectId().Hex()
+	}
+
+	if p.DateCreated.IsZero() {
+		p.DateCreated = eventTime
+	}
+
+	p.DateModified = eventTime
+	p.TenantID = tenantID
 }
 
 type lowestPricedOffersAttribute struct {
