@@ -8,7 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// ProductTrackings array of ProductTracking
+// ProductTrackings array of ProductTrackings
 type ProductTrackings []ProductTracking
 
 // Len -lenth of sort
