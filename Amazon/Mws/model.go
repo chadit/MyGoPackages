@@ -95,12 +95,12 @@ type ProductTracking struct {
 // NewProductTracking gets a new object
 func NewProductTracking(asin string) *ProductTracking {
 	newItem := new(ProductTracking)
-	newItem.InitProductTracking(asin)
+	newItem.InitProductTracking1(asin)
 	return newItem
 }
 
-// InitProductTracking set defaults
-func (p *ProductTracking) InitProductTracking(asin string) {
+// InitProductTracking1 set defaults
+func (p *ProductTracking) InitProductTracking1(asin string) {
 	p.Asin = asin
 	p.CurrencyCode = "USD"
 	p.SalesRank = 9223372036854775807
@@ -112,8 +112,8 @@ func (p *ProductTracking) InitProductTracking(asin string) {
 	p.DateModified = eventTime
 }
 
-// SetupSaveProductTracking updates the user object modified uers
-func (p *ProductTracking) SetupSaveProductTracking(tenantID string) {
+// SetupSaveProductTracking1 updates the user object modified uers
+func (p *ProductTracking) SetupSaveProductTracking1(tenantID string) {
 	eventTime := time.Now().UTC()
 	if p.ID == "" {
 		p.ID = bson.NewObjectId().Hex()
