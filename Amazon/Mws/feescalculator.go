@@ -17,7 +17,7 @@ var (
 )
 
 // CalculateFees gets the fee prices
-func CalculateFees(productItem *ProductTracking) float64 {
+func CalculateFees(productItem *ProductTracking, calculateAllFeesAsFba bool) float64 {
 	options := getAmazonFeeOptions(productItem.Category)
 	commissionFees := getCommision(productItem.RegularAmount, productItem.Category, options)
 
@@ -34,10 +34,8 @@ func CalculateFees(productItem *ProductTracking) float64 {
 		vcfFee = getClosingFees(false, false, productItem.PackageWeight, options)
 	}
 
-	if caseInsensitiveEquals(productItem.Channel, "Amazon") || caseInsensitiveEquals(productItem.Channel, "AmazonPrice") {
+	if caseInsensitiveEquals(productItem.Channel, "Amazon") || caseInsensitiveEquals(productItem.Channel, "AmazonPrice") || calculateAllFeesAsFba {
 		amazonProductTier := getProductTierValue(productItem, options)
-		// fmt.Println("productTier : ", amazonProductTier)
-		// fmt.Println("Channel : ", productItem.Channel)
 
 		if productItem.PackageHeight != 0 && productItem.PackageLength != 0 && productItem.PackageWidth != 0 && productItem.PackageWeight != 0 {
 			unitVolume := productItem.PackageWidth * productItem.PackageLength * productItem.PackageHeight
@@ -52,17 +50,7 @@ func CalculateFees(productItem *ProductTracking) float64 {
 			// end package check
 		}
 	}
-	// if productItem.Asin == "B00AVWKUJS" {
-	// 	fmt.Println("commissionFees (0.75) : ", commissionFees)
-	// 	fmt.Println("vcfFee (1.35) : ", vcfFee)
-	// 	fmt.Println("fbaHandling (0) : ", fbaHandling)
-	// 	fmt.Println("pickAndPack (1.06) : ", pickAndPack)
-	// 	fmt.Println("weightHandlingFee (0.5) : ", weightHandlingFee)
-	// 	fmt.Println("storageFee (0) : ", storageFee)
-	// 	fmt.Println("tvFee (0) : ", tvFee)
-	// 	fmt.Println("specialHandlingFee (0) : ", specialHandlingFee)
-	// 	fmt.Println("")
-	// }
+
 	return toFixed(commissionFees+vcfFee+fbaHandling+pickAndPack+weightHandlingFee+storageFee+tvFee+specialHandlingFee, 2)
 }
 

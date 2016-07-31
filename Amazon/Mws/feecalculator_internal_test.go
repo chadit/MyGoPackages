@@ -17,13 +17,13 @@ func TestSmallStandardRandom(t *testing.T) {
 	productItem.RegularAmount = 5.99
 	productItem.SaleAmount = 5.99
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -46,13 +46,13 @@ func TestSmallStandardMedia(t *testing.T) {
 	productItem.RegularAmount = 4.99
 	productItem.SaleAmount = 4.99
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -72,13 +72,13 @@ func TestSmallStandardNoMedia(t *testing.T) {
 	productItem.RegularAmount = 21.9
 	productItem.SaleAmount = 21.9
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -101,13 +101,13 @@ func TestSmallOverSize(t *testing.T) {
 	productItem.RegularAmount = 32.47
 	productItem.SaleAmount = 32.47
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -127,13 +127,13 @@ func TestSmallOverSizeCEItem(t *testing.T) {
 	productItem.RegularAmount = 86.71
 	productItem.SaleAmount = 86.71
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -156,13 +156,13 @@ func TestLargeStandardSize(t *testing.T) {
 	productItem.RegularAmount = 44.24
 	productItem.SaleAmount = 44.24
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}
@@ -182,13 +182,13 @@ func TestLargeStandardSizeUnknownCategory(t *testing.T) {
 	productItem.RegularAmount = 50.0
 	productItem.SaleAmount = 50.0
 
-	actual := CalculateFees(productItem)
+	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
 		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
-	actual = CalculateFees(productItem)
+	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
 		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
 	}

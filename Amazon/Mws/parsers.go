@@ -245,7 +245,7 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 		newProduct.SaleAmount = getXMLFloat64Value(offer.FindByPath("ListingPrice.Amount"))
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Shipping.Amount"))
-		newProduct.AmazonFees = CalculateFees(&newProduct)
+		newProduct.AmazonFees = CalculateFees(&newProduct, false)
 		*listProducts = append(*listProducts, newProduct)
 	}
 
@@ -301,7 +301,7 @@ func parseLowestOfferListingsForASIN(asin, itemCondition string, product Product
 		newProduct.SaleAmount = getXMLFloat64Value(offer.FindByPath("Price.LandedPrice.Amount"))
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("Price.ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Price.Shipping.Amount"))
-		newProduct.AmazonFees = CalculateFees(&newProduct)
+		newProduct.AmazonFees = CalculateFees(&newProduct, false)
 		*listProducts = append(*listProducts, newProduct)
 	}
 
