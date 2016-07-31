@@ -89,11 +89,11 @@ type ProductTracking struct {
 	// PackageWeight
 	PackageWeight float64 `json:"packageWeight" bson:"PackageWeight"`
 	// AmazonFees
-	AmazonFees float64 `json:"amazonFees" bson:"_"`
+	AmazonFees float64 `json:"amazonFees" bson:"-"`
 	// RetryCount - number of times an item was attempted to be scrapped
-	RetryCount int `json:"retryCount" bson:"_"`
+	RetryCount int `json:"retryCount" bson:"-"`
 	// Message - message information about the item
-	Message string `json:"message" bson:"_"`
+	Message string `json:"message" bson:"-"`
 }
 
 // NewProductTracking gets a new object
