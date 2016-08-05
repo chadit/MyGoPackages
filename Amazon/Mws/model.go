@@ -18,7 +18,7 @@ func (p ProductTrackings) Len() int {
 
 // Less - kdkd
 func (p ProductTrackings) Less(i, j int) bool {
-	return p[i].RegularAmount < p[j].RegularAmount
+	return p[i].TotalAmount < p[j].TotalAmount
 }
 
 // Swap - lll
