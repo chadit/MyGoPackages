@@ -264,6 +264,12 @@ func checkAndValidatePrices(newProduct ProductTracking) ProductTracking {
 		newProduct.SaleAmount = newProduct.RegularAmount
 	}
 
+	// Amazon started to add Shipping to thier Landed amount.  We want to keep sale and shipping seperate
+	// so if this happens, we will subtrack shipping
+	if newProduct.SaleAmount == newProduct.SaleAmount+newProduct.ShippingAmount {
+		newProduct.SaleAmount = newProduct.SaleAmount - newProduct.ShippingAmount
+	}
+
 	newProduct.TotalAmount = newProduct.SaleAmount + newProduct.ShippingAmount
 	return newProduct
 }
