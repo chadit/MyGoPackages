@@ -66,6 +66,8 @@ type ProductTracking struct {
 	SaleAmount float64 `json:"salePrice" bson:"SaleAmount"`
 	// ShippingAmount
 	ShippingAmount float64 `json:"shippingPrice" bson:"ShippingAmount"`
+	// TotalAmount - is SaleAmount + ShippingAmount, it is used to calculate buy box potential
+	TotalAmount float64 `json:"-" bson:"RegularAmount"`
 	// SalesRank
 	SalesRank int `json:"salesRank" bson:"SalesRank"`
 	// SellerFeedbackCount
