@@ -25,9 +25,9 @@ func setMwsKeys(amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, 
 // ----------------------------------------------------------------------------------------------
 
 // GetProductsByASIN return an item from MWS by its ASIN
-func GetProductsByASIN(asin, amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey string) (map[string]*[]ProductTracking, error) {
+func GetProductsByASIN(asin, amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey string, calculateAllFeesAsFba bool) (map[string][]ProductTracking, error) {
 	setMwsKeys(amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey)
-	productGroupings := make(map[string]*[]ProductTracking)
+	productGroupings := make(map[string][]ProductTracking)
 	// calls MWS to find product by keyword
 	response := getMatchingProductForASIN(asin)
 	if response == nil {
@@ -35,11 +35,11 @@ func GetProductsByASIN(asin, amazonSellerID, amazonAuthToken, amazonRegion, amaz
 	}
 
 	// parse that response into an array of ProductTracking items
-	return parseMatchingProductForASIN(response, "New")
+	return parseMatchingProductForASIN(response, "New", calculateAllFeesAsFba)
 }
 
-func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition string) (map[string]*[]ProductTracking, error) {
-	productGroupings := make(map[string]*[]ProductTracking)
+func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition string, calculateAllFeesAsFba bool) (map[string][]ProductTracking, error) {
+	productGroupings := make(map[string][]ProductTracking)
 
 	xmlNode, xmlNodeError := gmws.GenerateXMLNode(response.Body)
 	if xmlNodeError != nil {
@@ -85,7 +85,7 @@ func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition stri
 			newProductTracking.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
 		}
 
-		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(*newProductTracking, itemCondition)
+		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(newProductTracking, itemCondition, calculateAllFeesAsFba)
 		if productsWithPricingError == nil {
 			productGroupings[asin] = productsWithPricing
 		}
@@ -99,9 +99,9 @@ func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition stri
 // ----------------------------------------------------------------------------------------------
 
 // GetProductsByKeyword return an item from MWS by its ASIN
-func GetProductsByKeyword(keyword, itemCondition, amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey string) (map[string]*[]ProductTracking, error) {
+func GetProductsByKeyword(keyword, itemCondition, amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey string, calculateAllFeesAsFba bool) (map[string][]ProductTracking, error) {
 	setMwsKeys(amazonSellerID, amazonAuthToken, amazonRegion, amazonAccessKey, amazonSecretKey)
-	productGroupings := make(map[string]*[]ProductTracking)
+	productGroupings := make(map[string][]ProductTracking)
 	// calls MWS to find product by keyword
 	response := getMatchingProductForKeyword(keyword, itemCondition)
 	if response == nil {
@@ -109,11 +109,11 @@ func GetProductsByKeyword(keyword, itemCondition, amazonSellerID, amazonAuthToke
 	}
 
 	// parse that response into an array of ProductTracking items
-	return parseMatchingProductForKeyword(response, itemCondition)
+	return parseMatchingProductForKeyword(response, itemCondition, calculateAllFeesAsFba)
 }
 
-func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition string) (map[string]*[]ProductTracking, error) {
-	productGroupings := make(map[string]*[]ProductTracking)
+func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition string, calculateAllFeesAsFba bool) (map[string][]ProductTracking, error) {
+	productGroupings := make(map[string][]ProductTracking)
 
 	xmlNode, xmlNodeError := gmws.GenerateXMLNode(response.Body)
 	if xmlNodeError != nil {
@@ -159,7 +159,7 @@ func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition s
 			newProductTracking.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
 		}
 
-		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(*newProductTracking, itemCondition)
+		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(newProductTracking, itemCondition, calculateAllFeesAsFba)
 		if productsWithPricingError == nil {
 			productGroupings[asin] = productsWithPricing
 		}
@@ -172,19 +172,19 @@ func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition s
 //                    Get Products pricing information and sales information
 // ----------------------------------------------------------------------------------------------
 
-func getPricingInformationForProduct(product ProductTracking, itemCondition string) (*[]ProductTracking, error) {
-	var priceResponse *[]ProductTracking
+func getPricingInformationForProduct(product ProductTracking, itemCondition string, calculateAllFeesAsFba bool) ([]ProductTracking, error) {
+	var priceResponse []ProductTracking
 	var priceResponseError error
 
 	// call good route and nil is not returned
 	// parse xml to get product pricing info
-	priceResponse, priceResponseError = parseLowestPricedOffersForASIN(product.Asin, itemCondition, product)
+	priceResponse, priceResponseError = parseLowestPricedOffersForASIN(product.Asin, itemCondition, product, calculateAllFeesAsFba)
 	if priceResponseError == nil {
 		return priceResponse, priceResponseError
 	}
 	// fmt.Println("Mws.parser.getPricingInformationForProduct : " + priceResponseError.Error())
 
-	priceResponse, priceResponseError = parseLowestOfferListingsForASIN(product.Asin, itemCondition, product)
+	priceResponse, priceResponseError = parseLowestOfferListingsForASIN(product.Asin, itemCondition, product, calculateAllFeesAsFba)
 	if priceResponseError == nil {
 		return priceResponse, priceResponseError
 	}
@@ -198,8 +198,8 @@ func getPricingInformationForProduct(product ProductTracking, itemCondition stri
 // ----------------------------------------------------------------------------------------------
 
 // parseLowestPricedOffersForASIN good route -- 200 request per hour
-func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductTracking) (*[]ProductTracking, error) {
-	listProducts := &[]ProductTracking{}
+func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductTracking, calculateAllFeesAsFba bool) ([]ProductTracking, error) {
+	listProducts := []ProductTracking{}
 	response := getLowestPricedOffersForASIN(asin, itemCondition)
 	if response == nil {
 		fmt.Println("parseLowestPricedOffersForASIN : no response ")
@@ -245,11 +245,27 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 		newProduct.SaleAmount = getXMLFloat64Value(offer.FindByPath("ListingPrice.Amount"))
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Shipping.Amount"))
-		newProduct.AmazonFees = CalculateFees(&newProduct, false)
-		*listProducts = append(*listProducts, newProduct)
+
+		newProduct = checkAndValidatePrices(newProduct)
+
+		newProduct.AmazonFees = CalculateFees(&newProduct, calculateAllFeesAsFba)
+		listProducts = append(listProducts, newProduct)
 	}
 
 	return listProducts, nil
+}
+
+func checkAndValidatePrices(newProduct ProductTracking) ProductTracking {
+	if newProduct.RegularAmount == 0 && newProduct.SaleAmount > 0 {
+		newProduct.RegularAmount = newProduct.SaleAmount
+	}
+
+	if newProduct.SaleAmount == 0 && newProduct.RegularAmount > 0 {
+		newProduct.SaleAmount = newProduct.RegularAmount
+	}
+
+	newProduct.TotalAmount = newProduct.SaleAmount + newProduct.ShippingAmount
+	return newProduct
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -258,8 +274,8 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 // ----------------------------------------------------------------------------------------------
 
 // parseLowestOfferListingsForASIN good route -- 36000 request per hour
-func parseLowestOfferListingsForASIN(asin, itemCondition string, product ProductTracking) (*[]ProductTracking, error) {
-	listProducts := &[]ProductTracking{}
+func parseLowestOfferListingsForASIN(asin, itemCondition string, product ProductTracking, calculateAllFeesAsFba bool) ([]ProductTracking, error) {
+	listProducts := []ProductTracking{}
 	response := getLowestOfferListingsForASIN(asin, itemCondition)
 	if response == nil {
 		fmt.Println("parseLowestOfferListingsForASIN : no response ")
@@ -301,8 +317,11 @@ func parseLowestOfferListingsForASIN(asin, itemCondition string, product Product
 		newProduct.SaleAmount = getXMLFloat64Value(offer.FindByPath("Price.LandedPrice.Amount"))
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("Price.ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Price.Shipping.Amount"))
-		newProduct.AmazonFees = CalculateFees(&newProduct, false)
-		*listProducts = append(*listProducts, newProduct)
+
+		newProduct = checkAndValidatePrices(newProduct)
+
+		newProduct.AmazonFees = CalculateFees(&newProduct, calculateAllFeesAsFba)
+		listProducts = append(listProducts, newProduct)
 	}
 
 	return listProducts, nil

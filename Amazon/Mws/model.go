@@ -67,7 +67,7 @@ type ProductTracking struct {
 	// ShippingAmount
 	ShippingAmount float64 `json:"shippingPrice" bson:"ShippingAmount"`
 	// TotalAmount - is SaleAmount + ShippingAmount, it is used to calculate buy box potential
-	TotalAmount float64 `json:"-" bson:"RegularAmount"`
+	TotalAmount float64 `json:"totalPrice" bson:"TotalAmount"`
 	// SalesRank
 	SalesRank int `json:"salesRank" bson:"SalesRank"`
 	// SellerFeedbackCount
@@ -99,8 +99,8 @@ type ProductTracking struct {
 }
 
 // NewProductTracking gets a new object
-func NewProductTracking(asin string) *ProductTracking {
-	newItem := new(ProductTracking)
+func NewProductTracking(asin string) ProductTracking {
+	newItem := ProductTracking{}
 	newItem.InitProductTracking(asin)
 	return newItem
 }
