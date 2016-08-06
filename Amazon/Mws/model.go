@@ -16,9 +16,14 @@ func (p ProductTrackings) Len() int {
 	return len(p)
 }
 
-// Less - kdkd
+// Less - sort by seller FeedbackCount then total amount in an attempt to get the buy box winner
 func (p ProductTrackings) Less(i, j int) bool {
-	return p[i].TotalAmount < p[j].TotalAmount
+	if p[i].SellerFeedbackCount > p[j].SellerFeedbackCount {
+		return true
+	} else if p[i].TotalAmount > p[j].TotalAmount {
+		return true
+	}
+	return false
 }
 
 // Swap - lll
