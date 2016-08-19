@@ -72,7 +72,7 @@ type ProductTracking struct {
 	// ShippingAmount
 	ShippingAmount float64 `json:"shippingPrice" bson:"ShippingAmount"`
 	// TotalAmount - is SaleAmount + ShippingAmount, it is used to calculate buy box potential
-	TotalAmount float64 `json:"totalPrice" bson:"TotalAmount"`
+	TotalAmount float64 `json:"-" bson:"TotalAmount"`
 	// SalesRank
 	SalesRank int `json:"salesRank" bson:"SalesRank"`
 	// SellerFeedbackCount
@@ -136,6 +136,87 @@ func (p *ProductTracking) SetupSaveProductTracking(tenantID string) {
 
 	p.DateModified = eventTime
 	p.TenantID = tenantID
+}
+
+// ConvertToAmazonResult converts the product tracking item to an amazon data object
+func (p *ProductTracking) ConvertToAmazonResult() AmazonResult {
+	return AmazonResult{
+		TimeStamp:      p.DateCreated.Unix(),
+		Domain:         p.Domain,
+		Title:          p.Title,
+		RegularAmount:  p.RegularAmount,
+		SaleAmount:     p.SaleAmount,
+		ShippingAmount: p.ShippingAmount,
+		PathName:       p.PathName,
+		Message:        "",
+		RetryCount:     0,
+
+		AmazonFees:     p.AmazonFees,
+		Count:          p.Count,
+		Condition:      p.Condition,
+		SubCondition:   p.SubCondition,
+		Channel:        p.Channel,
+		IsSoldByAmazon: p.IsSoldByAmazon,
+	}
+}
+
+// ConvertToDefaultResult converts the product tracking item to an default data object
+func (p *ProductTracking) ConvertToDefaultResult() AmazonResult {
+	return AmazonResult{
+		TimeStamp:      p.DateCreated.Unix(),
+		Domain:         p.Domain,
+		Title:          p.Title,
+		RegularAmount:  p.RegularAmount,
+		SaleAmount:     p.SaleAmount,
+		ShippingAmount: p.ShippingAmount,
+		PathName:       p.PathName,
+		Message:        "",
+		RetryCount:     0,
+
+		AmazonFees:     p.AmazonFees,
+		Count:          p.Count,
+		Condition:      p.Condition,
+		SubCondition:   p.SubCondition,
+		Channel:        p.Channel,
+		IsSoldByAmazon: p.IsSoldByAmazon,
+	}
+}
+
+// AmazonResult returns history formated as an amazon payload
+type AmazonResult struct {
+	TimeStamp      int64   `json:"timeStamp" bson:"-"`
+	Domain         string  `json:"domain" bson:"-"`
+	Title          string  `json:"title" bson:"-"`
+	RegularAmount  float64 `json:"regularPrice" bson:"-"`
+	SaleAmount     float64 `json:"salePrice" bson:"-"`
+	ShippingAmount float64 `json:"shippingPrice" bson:"-"`
+	PathName       string  `json:"pathName" bson:"-"`
+	Message        string  `json:"message" bson:"-"`
+	RetryCount     int     `json:"retryCount" bson:"-"`
+
+	AmazonFees                   float64 `json:"amazonFees" bson:"-"`
+	Count                        int     `json:"count" bson:"-"`
+	Condition                    string  `json:"condition" bson:"-"`
+	SubCondition                 string  `json:"subCondition" bson:"-"`
+	Channel                      string  `json:"channel" bson:"-"`
+	IsSoldByAmazon               bool    `json:"isSoldByAmazon" bson:"-"`
+	IsBuyBoxEligible             bool    `json:"isBuyBoxEligible" bson:"-"`
+	SellerFeedbackCount          int     `json:"sellerFeedbackCount" bson:"-"`
+	SellerPositiveFeedbackRating string  `json:"sellerPositiveFeedbackRating" bson:"-"`
+	SalesRank                    int     `json:"salesRank" bson:"-"`
+}
+
+// DefaultResults returns history formated as an default payload
+type DefaultResults struct {
+	TimeStamp      int     `json:"timeStamp" bson:"-"`
+	Domain         string  `json:"domain" bson:"-"`
+	Title          string  `json:"title" bson:"-"`
+	RegularAmount  float64 `json:"regularPrice" bson:"-"`
+	SaleAmount     float64 `json:"salePrice" bson:"-"`
+	ShippingAmount float64 `json:"shippingPrice" bson:"-"`
+	PathName       string  `json:"pathName" bson:"-"`
+	Message        string  `json:"message" bson:"-"`
+	RetryCount     int     `json:"retryCount" bson:"-"`
 }
 
 type lowestPricedOffersAttribute struct {
