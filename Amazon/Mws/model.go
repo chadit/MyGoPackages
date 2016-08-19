@@ -151,12 +151,16 @@ func (p *ProductTracking) ConvertToAmazonResult() AmazonResult {
 		Message:        "",
 		RetryCount:     0,
 
-		AmazonFees:     p.AmazonFees,
-		Count:          p.Count,
-		Condition:      p.Condition,
-		SubCondition:   p.SubCondition,
-		Channel:        p.Channel,
-		IsSoldByAmazon: p.IsSoldByAmazon,
+		AmazonFees:                   p.AmazonFees,
+		Count:                        p.Count,
+		Condition:                    p.Condition,
+		SubCondition:                 p.SubCondition,
+		Channel:                      p.Channel,
+		IsSoldByAmazon:               p.IsSoldByAmazon,
+		IsBuyBoxEligible:             p.IsBuyBoxEligible,
+		SellerFeedbackCount:          p.SellerFeedbackCount,
+		SellerPositiveFeedbackRating: p.SellerPositiveFeedbackRating,
+		SalesRank:                    p.SalesRank,
 	}
 }
 
