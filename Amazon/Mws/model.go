@@ -60,7 +60,7 @@ type ProductTracking struct {
 	// SubCondition
 	SubCondition string `json:"subCondition" bson:"SubCondition"`
 	// PathName - URL Path to the item
-	PathName string `json:"pathName" bson:"PathName"`
+	PathName string `json:"pathname" bson:"PathName"`
 	// ImageUrl
 	ImageURL string `json:"imageUrl" bson:"ImageUrl"`
 	// CurrencyCode
