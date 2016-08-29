@@ -246,7 +246,7 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Shipping.Amount"))
 
-		newProduct = checkAndValidatePrices(newProduct)
+		newProduct.CheckAndValidateProductPrices()
 
 		newProduct.AmazonFees = CalculateFees(&newProduct, calculateAllFeesAsFba)
 		listProducts = append(listProducts, newProduct)
@@ -255,25 +255,25 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 	return listProducts, nil
 }
 
-func checkAndValidatePrices(newProduct ProductTracking) ProductTracking {
-	if newProduct.RegularAmount == 0 && newProduct.SaleAmount > 0 {
-		newProduct.RegularAmount = newProduct.SaleAmount
-	}
-
-	if newProduct.SaleAmount == 0 && newProduct.RegularAmount > 0 {
-		newProduct.SaleAmount = newProduct.RegularAmount
-	}
-
-	// Amazon started to add Shipping to thier Landed amount.  We want to keep sale and shipping seperate
-	// so if this happens, we will subtrack shipping
-	if newProduct.SaleAmount == newProduct.RegularAmount+newProduct.ShippingAmount {
-		newProduct.SaleAmount = newProduct.SaleAmount - newProduct.ShippingAmount
-		newProduct.TotalAmount = newProduct.SaleAmount
-	} else {
-		newProduct.TotalAmount = newProduct.SaleAmount + newProduct.ShippingAmount
-	}
-	return newProduct
-}
+// func checkAndValidatePrices(newProduct ProductTracking) ProductTracking {
+// 	if newProduct.RegularAmount == 0 && newProduct.SaleAmount > 0 {
+// 		newProduct.RegularAmount = newProduct.SaleAmount
+// 	}
+//
+// 	if newProduct.SaleAmount == 0 && newProduct.RegularAmount > 0 {
+// 		newProduct.SaleAmount = newProduct.RegularAmount
+// 	}
+//
+// 	// Amazon started to add Shipping to thier Landed amount.  We want to keep sale and shipping seperate
+// 	// so if this happens, we will subtrack shipping
+// 	if newProduct.SaleAmount == newProduct.RegularAmount+newProduct.ShippingAmount {
+// 		newProduct.SaleAmount = newProduct.SaleAmount - newProduct.ShippingAmount
+// 		newProduct.TotalAmount = newProduct.SaleAmount
+// 	} else {
+// 		newProduct.TotalAmount = newProduct.SaleAmount + newProduct.ShippingAmount
+// 	}
+// 	return newProduct
+// }
 
 // ----------------------------------------------------------------------------------------------
 //      Get Products pricing information and sales information - LowestOfferListingsForASIN
@@ -324,8 +324,7 @@ func parseLowestOfferListingsForASIN(asin, itemCondition string, product Product
 		newProduct.SaleAmount = getXMLFloat64Value(offer.FindByPath("Price.LandedPrice.Amount"))
 		newProduct.RegularAmount = getXMLFloat64Value(offer.FindByPath("Price.ListingPrice.Amount"))
 		newProduct.ShippingAmount = getXMLFloat64Value(offer.FindByPath("Price.Shipping.Amount"))
-
-		newProduct = checkAndValidatePrices(newProduct)
+		newProduct.CheckAndValidateProductPrices()
 
 		newProduct.AmazonFees = CalculateFees(&newProduct, calculateAllFeesAsFba)
 		listProducts = append(listProducts, newProduct)

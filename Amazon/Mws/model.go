@@ -186,6 +186,30 @@ func (p *ProductTracking) ConvertToDefaultResult() AmazonResult {
 	}
 }
 
+// CheckAndValidateProductPrices will massage the prices, if sale price is zero it will make it equal to regular price
+// if regular is zero it will set it to sale
+// it will also check if shipping is included in sale price
+func (p *ProductTracking) CheckAndValidateProductPrices() {
+	if p.SaleAmount > 0 {
+		// Amazon started to add Shipping to thier Landed amount.  We want to keep sale and shipping seperate
+		// so if this happens, we will subtrack shipping
+		if p.SaleAmount == p.RegularAmount+p.ShippingAmount {
+			p.SaleAmount = p.SaleAmount - p.ShippingAmount
+			p.TotalAmount = p.SaleAmount
+		} else {
+			p.TotalAmount = p.SaleAmount + p.ShippingAmount
+		}
+	}
+
+	if p.RegularAmount == 0 && p.SaleAmount > 0 {
+		p.RegularAmount = p.SaleAmount
+	}
+
+	if p.SaleAmount == 0 && p.RegularAmount > 0 {
+		p.SaleAmount = p.RegularAmount
+	}
+}
+
 // AmazonResult returns history formated as an amazon payload
 type AmazonResult struct {
 	TimeStamp      int64   `json:"timeStamp" bson:"-"`
