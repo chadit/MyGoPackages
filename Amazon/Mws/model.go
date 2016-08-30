@@ -212,7 +212,7 @@ func (p *ProductTracking) CheckAndValidateProductPrices() {
 
 // AmazonResult returns history formated as an amazon payload
 type AmazonResult struct {
-	TimeStamp      int64   `json:"timeStamp" bson:"-"`
+	TimeStamp      int64   `json:"timestamp" bson:"-"`
 	Domain         string  `json:"domain" bson:"-"`
 	Title          string  `json:"title" bson:"-"`
 	RegularAmount  float64 `json:"regularPrice" bson:"-"`
@@ -236,7 +236,7 @@ type AmazonResult struct {
 
 // DefaultResults returns history formated as an default payload
 type DefaultResults struct {
-	TimeStamp      int     `json:"timeStamp" bson:"-"`
+	TimeStamp      int     `json:"timestamp" bson:"-"`
 	Domain         string  `json:"domain" bson:"-"`
 	Title          string  `json:"title" bson:"-"`
 	RegularAmount  float64 `json:"regularPrice" bson:"-"`

@@ -255,26 +255,6 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 	return listProducts, nil
 }
 
-// func checkAndValidatePrices(newProduct ProductTracking) ProductTracking {
-// 	if newProduct.RegularAmount == 0 && newProduct.SaleAmount > 0 {
-// 		newProduct.RegularAmount = newProduct.SaleAmount
-// 	}
-//
-// 	if newProduct.SaleAmount == 0 && newProduct.RegularAmount > 0 {
-// 		newProduct.SaleAmount = newProduct.RegularAmount
-// 	}
-//
-// 	// Amazon started to add Shipping to thier Landed amount.  We want to keep sale and shipping seperate
-// 	// so if this happens, we will subtrack shipping
-// 	if newProduct.SaleAmount == newProduct.RegularAmount+newProduct.ShippingAmount {
-// 		newProduct.SaleAmount = newProduct.SaleAmount - newProduct.ShippingAmount
-// 		newProduct.TotalAmount = newProduct.SaleAmount
-// 	} else {
-// 		newProduct.TotalAmount = newProduct.SaleAmount + newProduct.ShippingAmount
-// 	}
-// 	return newProduct
-// }
-
 // ----------------------------------------------------------------------------------------------
 //      Get Products pricing information and sales information - LowestOfferListingsForASIN
 //                         Good Route 36000 Request per hour Throttle
