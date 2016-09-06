@@ -218,7 +218,7 @@ type AmazonResult struct {
 	RegularAmount  float64 `json:"regularPrice" bson:"-"`
 	SaleAmount     float64 `json:"salePrice" bson:"-"`
 	ShippingAmount float64 `json:"shippingPrice" bson:"-"`
-	PathName       string  `json:"pathName" bson:"-"`
+	PathName       string  `json:"pathname" bson:"-"`
 	Message        string  `json:"message" bson:"-"`
 	RetryCount     int     `json:"retryCount" bson:"-"`
 
@@ -242,7 +242,7 @@ type DefaultResults struct {
 	RegularAmount  float64 `json:"regularPrice" bson:"-"`
 	SaleAmount     float64 `json:"salePrice" bson:"-"`
 	ShippingAmount float64 `json:"shippingPrice" bson:"-"`
-	PathName       string  `json:"pathName" bson:"-"`
+	PathName       string  `json:"pathname" bson:"-"`
 	Message        string  `json:"message" bson:"-"`
 	RetryCount     int     `json:"retryCount" bson:"-"`
 }
