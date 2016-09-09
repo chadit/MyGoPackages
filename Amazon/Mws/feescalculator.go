@@ -50,7 +50,7 @@ func CalculateFees(productItem *ProductTracking, calculateAllFeesAsFba bool) flo
 			// end package check
 		}
 	}
-
+	//	fmt.Println("toFixed ", productItem.Asin)
 	return toFixed(commissionFees+vcfFee+fbaHandling+pickAndPack+weightHandlingFee+storageFee+tvFee+specialHandlingFee, 2)
 }
 
@@ -158,7 +158,9 @@ func round(num float64) int {
 
 func toFixed(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
-	return float64(round(num*output)) / output
+	results := float64(round(num*output)) / output
+	//	fmt.Println("num", num, "precision", precision, "output", output, "results", results)
+	return results
 }
 
 func caseInsensitiveContains(s, substr string) bool {

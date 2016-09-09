@@ -22,5 +22,6 @@ func getAmazonStorageFees(unitVolume float64, productTier int) float64 {
 		}
 	}
 
-	return toFixed((unitVolume*0.0005787)*multiplier, 2)
+	// return toFixed((unitVolume*0.0005787)*multiplier, 2)
+	return (unitVolume * 0.0005787) * multiplier
 }

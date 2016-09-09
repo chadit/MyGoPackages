@@ -1,7 +1,6 @@
 package Mws
 
 import (
-	"fmt"
 	"sort"
 	"testing"
 )
@@ -39,9 +38,9 @@ func Test_ProductTracking_Sort(t *testing.T) {
 
 	sort.Sort(items)
 
-	for i := range items {
-		fmt.Println(items[i])
-	}
+	// for i := range items {
+	// 	//	fmt.Println(items[i])
+	// }
 	if items[0].TotalAmount != 34.99 {
 		t.Errorf("expected: '%g', got:  '%g'", 34.99, items[0].TotalAmount)
 	}

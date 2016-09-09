@@ -19,13 +19,13 @@ func TestSmallStandardRandom(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -48,19 +48,19 @@ func TestSmallStandardMedia(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
 func TestSmallStandardNoMedia(t *testing.T) {
 	merchantExpected := 9.86
-	expectedAmazon := 12.44
+	expectedAmazon := 12.43
 	productItem := new(ProductTracking)
 	productItem.Asin = "B00AG0D5MO"
 	productItem.Category = "Digital Device Accessory"
@@ -74,13 +74,13 @@ func TestSmallStandardNoMedia(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -103,13 +103,13 @@ func TestSmallOverSize(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -129,13 +129,13 @@ func TestSmallOverSizeCEItem(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -158,13 +158,13 @@ func TestLargeStandardSize(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -184,13 +184,13 @@ func TestLargeStandardSizeUnknownCategory(t *testing.T) {
 
 	actual := CalculateFees(productItem, false)
 	if actual != merchantExpected {
-		t.Errorf("merchantExpected: '%g', got: '%g'", merchantExpected, actual)
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
 	}
 
 	productItem.Channel = "Amazon"
 	actual = CalculateFees(productItem, false)
 	if actual != expectedAmazon {
-		t.Errorf("expectedAmazon: '%g', got: '%g'", expectedAmazon, actual)
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
 
@@ -248,5 +248,30 @@ func TestGetAmazonPackageSize(t *testing.T) {
 
 	if actual[2] != expected3 {
 		t.Errorf("expected3: '%g', got: '%g'", expected3, actual[2])
+	}
+}
+func TestRandomItemB00I19TU76(t *testing.T) {
+	merchantExpected := 1.95
+	expectedAmazon := 5.0
+	productItem := new(ProductTracking)
+	productItem.Asin = "B00I19TU76"
+	productItem.Category = "Personal Computer"
+	productItem.PackageLength = 7.3
+	productItem.PackageWidth = 5.5
+	productItem.PackageHeight = 2.6
+	productItem.PackageWeight = 0.3
+	productItem.Channel = "Merchant"
+	productItem.RegularAmount = 12.99
+	productItem.SaleAmount = 12.99
+
+	actual := CalculateFees(productItem, false)
+	if actual != merchantExpected {
+		t.Errorf("ASIN '%s' merchantExpected: '%g', got: '%g'", productItem.Asin, merchantExpected, actual)
+	}
+
+	productItem.Channel = "Amazon"
+	actual = CalculateFees(productItem, false)
+	if actual != expectedAmazon {
+		t.Errorf("ASIN '%s' expectedAmazon: '%g', got: '%g'", productItem.Asin, expectedAmazon, actual)
 	}
 }
