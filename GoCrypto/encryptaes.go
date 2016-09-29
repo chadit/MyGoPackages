@@ -24,8 +24,6 @@ func EncryptAES(key, text string) (string, error) {
 	cfb.XORKeyStream(ciphertext, plaintext)
 
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
-
-	// return encodeBase64(ciphertext)
 }
 
 // DecryptAES - encrypt a key with AES key
