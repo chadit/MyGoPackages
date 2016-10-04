@@ -43,7 +43,7 @@ func EncryptRSA(data, privkp string) (string, error) {
 func writeFile(data, file string) {
 	f, fError := os.Create(file)
 	if fError != nil {
-		fmt.Println(fError)
+		fmt.Println("error writing file : ", fError)
 	}
 	defer f.Close()
 	f.WriteString(data)

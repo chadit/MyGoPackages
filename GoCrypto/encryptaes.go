@@ -3,44 +3,47 @@ package gocrypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
+	"errors"
+	"io"
 )
 
-var iv = []byte{35, 46, 57, 24, 85, 35, 24, 74, 87, 35, 88, 98, 66, 32, 14, 05}
+//var iv = []byte{35, 46, 57, 24, 85, 35, 24, 74, 87, 35, 88, 98, 66, 32, 14, 05}
 
 // EncryptAES - encrypt a key with AES key
-func EncryptAES(key, text string) (string, error) {
-	var (
-		block cipher.Block
-		err   error
-	)
-
-	if block, err = aes.NewCipher([]byte(key)); err != nil {
-		return "", err
+func EncryptAES(key, text []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	plaintext := []byte(text)
+	b := base64.StdEncoding.EncodeToString(text)
+	ciphertext := make([]byte, aes.BlockSize+len(b))
+	iv := ciphertext[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return nil, err
+	}
 	cfb := cipher.NewCFBEncrypter(block, iv)
-	ciphertext := make([]byte, len(plaintext))
-	cfb.XORKeyStream(ciphertext, plaintext)
-
-	return base64.StdEncoding.EncodeToString(ciphertext), nil
+	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
+	return ciphertext, nil
 }
 
 // DecryptAES - encrypt a key with AES key
-func DecryptAES(key, text string) (string, error) {
-	var (
-		block      cipher.Block
-		err        error
-		ciphertext []byte
-	)
-	if block, err = aes.NewCipher([]byte(key)); err != nil {
-		return "", err
+func DecryptAES(key, text []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
 	}
-	if ciphertext, err = base64.StdEncoding.DecodeString(text); err != nil {
-		return "", err
+	if len(text) < aes.BlockSize {
+		return nil, errors.New("ciphertext too short")
 	}
-	cfb := cipher.NewCFBEncrypter(block, iv)
-	plaintext := make([]byte, len(ciphertext))
-	cfb.XORKeyStream(plaintext, ciphertext)
-	return string(plaintext), nil
+	iv := text[:aes.BlockSize]
+	text = text[aes.BlockSize:]
+	cfb := cipher.NewCFBDecrypter(block, iv)
+	cfb.XORKeyStream(text, text)
+	data, err := base64.StdEncoding.DecodeString(string(text))
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
