@@ -9,8 +9,6 @@ import (
 	"io"
 )
 
-//var iv = []byte{35, 46, 57, 24, 85, 35, 24, 74, 87, 35, 88, 98, 66, 32, 14, 05}
-
 // EncryptAES - encrypt a key with AES key
 func EncryptAES(key, text []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
