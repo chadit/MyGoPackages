@@ -37,12 +37,8 @@ type ProductTracking struct {
 	ID string `json:"id"  bson:"_id" binding:"required"`
 	// (ReadOnly) Date the document was created (UTC)
 	DateCreated time.Time `json:"dateCreated" bson:"DateCreated" binding:"required"`
-	// (ReadOnly) Date the document was modified (UTC)
-	DateModified time.Time `json:"-" bson:"DateModified"`
-	// (ReadOnly) What user modified the document
-	UserModified string `json:"-" bson:"UserModified,omitempty"`
-	// TenantID pertains to the tenant the document belongs to.  this is not serialized out
-	TenantID string `json:"-" bson:"TenantId"`
+	// MarketplaceId
+	MarketplaceID string `json:"marketplaceId" bson:"MarketplaceId"`
 	// Asin - Amazon Number
 	Asin string `json:"asin" bson:"Asin"`
 	// Upc Number
@@ -120,7 +116,6 @@ func (p *ProductTracking) InitProductTracking(asin string) {
 	eventTime := time.Now().UTC()
 	p.ID = Mongo.GetNewBsonIDString()
 	p.DateCreated = eventTime
-	p.DateModified = eventTime
 }
 
 // SetupSaveProductTracking updates the user object modified uers
@@ -133,9 +128,6 @@ func (p *ProductTracking) SetupSaveProductTracking(tenantID string) {
 	if p.DateCreated.IsZero() {
 		p.DateCreated = eventTime
 	}
-
-	p.DateModified = eventTime
-	p.TenantID = tenantID
 }
 
 // ConvertToAmazonResult converts the product tracking item to an amazon data object
