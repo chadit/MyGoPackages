@@ -3,7 +3,7 @@ package Mws
 import (
 	"time"
 
-	"github.com/chadit/GoRepositories/Mongo"
+	uuid "github.com/satori/go.uuid"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -114,7 +114,8 @@ func (p *ProductTracking) InitProductTracking(asin string) {
 	p.Channel = "Merchant"
 
 	eventTime := time.Now().UTC()
-	p.ID = Mongo.GetNewBsonIDString()
+	//p.ID = Mongo.GetNewBsonIDString()
+	p.ID = uuid.NewV4().String()
 	p.DateCreated = eventTime
 }
 
