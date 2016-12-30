@@ -31,7 +31,7 @@ func GetProductsByASIN(asin, amazonSellerID, amazonAuthToken, amazonRegion, amaz
 	// calls MWS to find product by keyword
 	response := getMatchingProductForASIN(asin)
 	if response == nil {
-		return productGroupings, errors.New("no response from MWS ProductsByASIN")
+		return productGroupings, errors.New("parser : no response from MWS ProductsByASIN")
 	}
 
 	// parse that response into an array of ProductTracking items
@@ -48,7 +48,7 @@ func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition stri
 
 	products := xmlNode.FindByPath("GetMatchingProductResponse.GetMatchingProductResult.Product")
 	if len(products) == 0 {
-		return productGroupings, errors.New("could not parse product")
+		return productGroupings, errors.New("parser : could not parse product")
 	}
 
 	for _, product := range products {
@@ -65,27 +65,28 @@ func parseMatchingProductForASIN(response *mwsHttps.Response, itemCondition stri
 		}
 
 		asin := getXMLStringValue(itemMarketPlaceIdentifiers[0].FindByPath("ASIN"))
-		newProductTracking := NewProductTracking(asin)
-		newProductTracking.Domain = "www_amazon_com"
-		newProductTracking.Title = getXMLStringValue(itemAttributes[0].FindByPath("Title"))
-		newProductTracking.ImageURL = getXMLStringValue(itemAttributes[0].FindByPath("SmallImage.URL"))
-		newProductTracking.Category = getXMLStringValue(itemAttributes[0].FindByPath("ProductGroup"))
-		newProductTracking.PathName = "http://www.amazon.com/dp/" + asin
+		npt := NewProductTracking(asin)
+		npt.MarketplaceID = getXMLStringValue(itemMarketPlaceIdentifiers[0].FindByPath("MarketplaceId"))
+		npt.Domain = "www_amazon_com"
+		npt.Title = getXMLStringValue(itemAttributes[0].FindByPath("Title"))
+		npt.ImageURL = getXMLStringValue(itemAttributes[0].FindByPath("SmallImage.URL"))
+		npt.Category = getXMLStringValue(itemAttributes[0].FindByPath("ProductGroup"))
+		npt.PathName = "http://www.amazon.com/dp/" + asin
 
 		salesRankings := product.FindByPath("SalesRankings.SalesRank.Rank")
 		if len(salesRankings) > 0 {
-			newProductTracking.SalesRank = getXMLIntValue((salesRankings))
+			npt.SalesRank = getXMLIntValue((salesRankings))
 		}
 
 		itemDemensions := itemAttributes[0].FindByPath("PackageDimensions")
 		if len(itemDemensions) > 0 {
-			newProductTracking.PackageHeight = getProductDemensions(itemDemensions[0], "Height.#text")
-			newProductTracking.PackageLength = getProductDemensions(itemDemensions[0], "Length.#text")
-			newProductTracking.PackageWeight = getProductDemensions(itemDemensions[0], "Weight.#text")
-			newProductTracking.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
+			npt.PackageHeight = getProductDemensions(itemDemensions[0], "Height.#text")
+			npt.PackageLength = getProductDemensions(itemDemensions[0], "Length.#text")
+			npt.PackageWeight = getProductDemensions(itemDemensions[0], "Weight.#text")
+			npt.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
 		}
 
-		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(newProductTracking, itemCondition, calculateAllFeesAsFba)
+		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(npt, itemCondition, calculateAllFeesAsFba)
 		if productsWithPricingError == nil {
 			productGroupings[asin] = productsWithPricing
 		}
@@ -105,7 +106,7 @@ func GetProductsByKeyword(keyword, itemCondition, amazonSellerID, amazonAuthToke
 	// calls MWS to find product by keyword
 	response := getMatchingProductForKeyword(keyword, itemCondition)
 	if response == nil {
-		return productGroupings, errors.New("no response from MWS MatchProduct")
+		return productGroupings, errors.New("parser : no response from MWS MatchProduct")
 	}
 
 	// parse that response into an array of ProductTracking items
@@ -122,7 +123,7 @@ func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition s
 
 	products := xmlNode.FindByPath("ListMatchingProductsResponse.ListMatchingProductsResult.Products.Product")
 	if len(products) == 0 {
-		return productGroupings, errors.New("could not parse product")
+		return productGroupings, errors.New("parser : could not parse product")
 	}
 
 	for _, product := range products {
@@ -139,27 +140,28 @@ func parseMatchingProductForKeyword(response *mwsHttps.Response, itemCondition s
 		}
 
 		asin := getXMLStringValue(itemMarketPlaceIdentifiers[0].FindByPath("ASIN"))
-		newProductTracking := NewProductTracking(asin)
-		newProductTracking.Domain = "www_amazon_com"
-		newProductTracking.Title = getXMLStringValue(itemAttributes[0].FindByPath("Title"))
-		newProductTracking.ImageURL = getXMLStringValue(itemAttributes[0].FindByPath("SmallImage.URL"))
-		newProductTracking.Category = getXMLStringValue(itemAttributes[0].FindByPath("ProductGroup"))
-		newProductTracking.PathName = "http://www.amazon.com/dp/" + asin
+		npt := NewProductTracking(asin)
+		npt.MarketplaceID = getXMLStringValue(itemMarketPlaceIdentifiers[0].FindByPath("MarketplaceId"))
+		npt.Domain = "www_amazon_com"
+		npt.Title = getXMLStringValue(itemAttributes[0].FindByPath("Title"))
+		npt.ImageURL = getXMLStringValue(itemAttributes[0].FindByPath("SmallImage.URL"))
+		npt.Category = getXMLStringValue(itemAttributes[0].FindByPath("ProductGroup"))
+		npt.PathName = "http://www.amazon.com/dp/" + asin
 
 		salesRankings := product.FindByPath("SalesRankings.SalesRank.Rank")
 		if len(salesRankings) > 0 {
-			newProductTracking.SalesRank = getXMLIntValue((salesRankings))
+			npt.SalesRank = getXMLIntValue((salesRankings))
 		}
 
 		itemDemensions := itemAttributes[0].FindByPath("PackageDimensions")
 		if len(itemDemensions) > 0 {
-			newProductTracking.PackageHeight = getProductDemensions(itemDemensions[0], "Height.#text")
-			newProductTracking.PackageLength = getProductDemensions(itemDemensions[0], "Length.#text")
-			newProductTracking.PackageWeight = getProductDemensions(itemDemensions[0], "Weight.#text")
-			newProductTracking.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
+			npt.PackageHeight = getProductDemensions(itemDemensions[0], "Height.#text")
+			npt.PackageLength = getProductDemensions(itemDemensions[0], "Length.#text")
+			npt.PackageWeight = getProductDemensions(itemDemensions[0], "Weight.#text")
+			npt.PackageWidth = getProductDemensions(itemDemensions[0], "Width.#text")
 		}
 
-		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(newProductTracking, itemCondition, calculateAllFeesAsFba)
+		productsWithPricing, productsWithPricingError := getPricingInformationForProduct(npt, itemCondition, calculateAllFeesAsFba)
 		if productsWithPricingError == nil {
 			productGroupings[asin] = productsWithPricing
 		}
@@ -189,7 +191,7 @@ func getPricingInformationForProduct(product ProductTracking, itemCondition stri
 		return priceResponse, priceResponseError
 	}
 	// parse xml to get product pricing info
-	return priceResponse, errors.New("could not get prices")
+	return priceResponse, errors.New("parser : could not get prices")
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -203,7 +205,7 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 	response := getLowestPricedOffersForASIN(asin, itemCondition)
 	if response == nil {
 		fmt.Println("parseLowestPricedOffersForASIN : no response ")
-		return listProducts, errors.New("no response")
+		return listProducts, errors.New("parser : no response")
 	}
 
 	xmlNode, xmlNodeError := gmws.GenerateXMLNode(response.Body)
@@ -221,12 +223,12 @@ func parseLowestPricedOffersForASIN(asin, itemCondition string, product ProductT
 	// fmt.Println("parseLowestPricedOffersForASIN")
 	offers := xmlNode.FindByPath("GetLowestPricedOffersForASINResponse.GetLowestPricedOffersForASINResult.Offers.Offer")
 	if len(offers) == 0 {
-		return listProducts, errors.New("could not parse offers")
+		return listProducts, errors.New("parser : could not parse offers")
 	}
 
 	headerNode := xmlNode.FindByPath("GetLowestPricedOffersForASINResponse.GetLowestPricedOffersForASINResult")
 	if len(headerNode) == 0 {
-		return listProducts, errors.New("could not parse headerNode")
+		return listProducts, errors.New("parser : could not parse headerNode")
 	}
 	newHeaderAttributes := lowestPricedOffersAttribute{}
 	_ = headerNode[0].ToStruct(&newHeaderAttributes)
@@ -266,7 +268,7 @@ func parseLowestOfferListingsForASIN(asin, itemCondition string, product Product
 	response := getLowestOfferListingsForASIN(asin, itemCondition)
 	if response == nil {
 		fmt.Println("parseLowestOfferListingsForASIN : no response ")
-		return listProducts, errors.New("no response")
+		return listProducts, errors.New("parser : no response")
 	}
 
 	xmlNode, xmlNodeError := gmws.GenerateXMLNode(response.Body)
@@ -286,7 +288,7 @@ func parseLowestOfferListingsForASIN(asin, itemCondition string, product Product
 	fmt.Println("parseLowestOfferListingsForASIN")
 	offers := xmlNode.FindByPath("GetLowestOfferListingsForASINResponse.GetLowestOfferListingsForASINResult.Product.LowestOfferListings.LowestOfferListing")
 	if len(offers) == 0 {
-		return listProducts, errors.New("could not parse offers")
+		return listProducts, errors.New("parser : could not parse offers")
 	}
 
 	for _, offer := range offers {
