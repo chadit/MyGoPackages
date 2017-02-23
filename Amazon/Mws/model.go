@@ -4,8 +4,6 @@ import (
 	"time"
 
 	uuid "github.com/satori/go.uuid"
-
-	"gopkg.in/mgo.v2/bson"
 )
 
 // ProductTrackings array of ProductTrackings
@@ -33,70 +31,38 @@ func (p ProductTrackings) Swap(i, j int) {
 
 // ProductTracking model
 type ProductTracking struct {
-	// (ReadOnly) Id of the document, created by system utilizing Mongo Bson Id
-	ID string `json:"id"  bson:"_id" binding:"required"`
-	// (ReadOnly) Date the document was created (UTC)
-	DateCreated time.Time `json:"dateCreated" bson:"DateCreated" binding:"required"`
-	// MarketplaceId
-	MarketplaceID string `json:"marketplaceId" bson:"MarketplaceId"`
-	// Asin - Amazon Number
-	Asin string `json:"asin" bson:"Asin"`
-	// Upc Number
-	Upc string `json:"UPC" bson:"Upc"`
-	// Domain
-	Domain string `json:"domain" bson:"Domain"`
-	// Title
-	Title string `json:"title" bson:"Title"`
-	// Category
-	Category string `json:"category" bson:"Category"`
-	// Author
-	Author string `json:"author" bson:"Author"`
-	// Condition
-	Condition string `json:"condition" bson:"Condition"`
-	// SubCondition
-	SubCondition string `json:"subCondition" bson:"SubCondition"`
-	// PathName - URL Path to the item
-	PathName string `json:"pathname" bson:"PathName"`
-	// ImageUrl
-	ImageURL string `json:"imageUrl" bson:"ImageUrl"`
-	// CurrencyCode
-	CurrencyCode string `json:"currencyCode" bson:"CurrencyCode"`
-	// RegularAmount
-	RegularAmount float64 `json:"regularPrice" bson:"RegularAmount"`
-	// SaleAmount
-	SaleAmount float64 `json:"salePrice" bson:"SaleAmount"`
-	// ShippingAmount
-	ShippingAmount float64 `json:"shippingPrice" bson:"ShippingAmount"`
-	// TotalAmount - is SaleAmount + ShippingAmount, it is used to calculate buy box potential
-	TotalAmount float64 `json:"-" bson:"TotalAmount"`
-	// SalesRank
-	SalesRank int `json:"salesRank" bson:"SalesRank"`
-	// SellerFeedbackCount
-	SellerFeedbackCount int `json:"sellerFeedbackCount" bson:"SellerFeedbackCount"`
-	// SellerPositiveFeedbackRating
-	SellerPositiveFeedbackRating string `json:"sellerPositiveFeedbackRating" bson:"SellerPositiveFeedbackRating"`
-	// Count - Count of items in inventory (for amazon this can be split by merchant vs amazon [channels])
-	Count int `json:"count" bson:"Count"`
-	// Channel
-	Channel string `json:"channel" bson:"Channel"`
-	// IsSoldByAmazon
-	IsSoldByAmazon bool `json:"isSoldByAmazon" bson:"IsSoldByAmazon"`
-	// IsBuyBoxEligible
-	IsBuyBoxEligible bool `json:"isBuyBoxEligible" bson:"IsBuyBoxEligible"`
-	// PackageLength
-	PackageLength float64 `json:"packageLength" bson:"PackageLength"`
-	// PackageWidth
-	PackageWidth float64 `json:"packageWidth" bson:"PackageWidth"`
-	// PackageHeight
-	PackageHeight float64 `json:"packageHeight" bson:"PackageHeight"`
-	// PackageWeight
-	PackageWeight float64 `json:"packageWeight" bson:"PackageWeight"`
-	// AmazonFees
-	AmazonFees float64 `json:"amazonFees" bson:"-"`
-	// RetryCount - number of times an item was attempted to be scrapped
-	RetryCount int `json:"retryCount" bson:"-"`
-	// Message - message information about the item
-	Message string `json:"message" bson:"-"`
+	ID                           string    `json:"id"  bson:"_id" binding:"required"`
+	DateCreated                  time.Time `json:"dateCreated" bson:"DateCreated" binding:"required"`
+	MarketplaceID                string    `json:"marketplaceId" bson:"MarketplaceId"`
+	Asin                         string    `json:"asin" bson:"Asin"`
+	Upc                          string    `json:"UPC" bson:"Upc"`
+	Domain                       string    `json:"domain" bson:"Domain"`
+	Title                        string    `json:"title" bson:"Title"`
+	Category                     string    `json:"category" bson:"Category"`
+	Author                       string    `json:"author" bson:"Author"`
+	Condition                    string    `json:"condition" bson:"Condition"`
+	SubCondition                 string    `json:"subCondition" bson:"SubCondition"`
+	PathName                     string    `json:"pathname" bson:"PathName"`
+	ImageURL                     string    `json:"imageUrl" bson:"ImageUrl"`
+	CurrencyCode                 string    `json:"currencyCode" bson:"CurrencyCode"`
+	RegularAmount                float64   `json:"regularPrice" bson:"RegularAmount"`
+	SaleAmount                   float64   `json:"salePrice" bson:"SaleAmount"`
+	ShippingAmount               float64   `json:"shippingPrice" bson:"ShippingAmount"`
+	TotalAmount                  float64   `json:"-" bson:"TotalAmount"`
+	SalesRank                    int       `json:"salesRank" bson:"SalesRank"`
+	SellerFeedbackCount          int       `json:"sellerFeedbackCount" bson:"SellerFeedbackCount"`
+	SellerPositiveFeedbackRating string    `json:"sellerPositiveFeedbackRating" bson:"SellerPositiveFeedbackRating"`
+	Count                        int       `json:"count" bson:"Count"`
+	Channel                      string    `json:"channel" bson:"Channel"`
+	IsSoldByAmazon               bool      `json:"isSoldByAmazon" bson:"IsSoldByAmazon"`
+	IsBuyBoxEligible             bool      `json:"isBuyBoxEligible" bson:"IsBuyBoxEligible"`
+	PackageLength                float64   `json:"packageLength" bson:"PackageLength"`
+	PackageWidth                 float64   `json:"packageWidth" bson:"PackageWidth"`
+	PackageHeight                float64   `json:"packageHeight" bson:"PackageHeight"`
+	PackageWeight                float64   `json:"packageWeight" bson:"PackageWeight"`
+	AmazonFees                   float64   `json:"amazonFees" bson:"-"`
+	RetryCount                   int       `json:"retryCount" bson:"-"`
+	Message                      string    `json:"message" bson:"-"`
 }
 
 // NewProductTracking gets a new object
@@ -110,20 +76,19 @@ func NewProductTracking(asin string) ProductTracking {
 func (p *ProductTracking) InitProductTracking(asin string) {
 	p.Asin = asin
 	p.CurrencyCode = "USD"
-	p.SalesRank = 9223372036854775807
+	p.SalesRank = 9223372036854775807 // max number
 	p.Channel = "Merchant"
 
 	eventTime := time.Now().UTC()
-	//p.ID = Mongo.GetNewBsonIDString()
 	p.ID = uuid.NewV4().String()
 	p.DateCreated = eventTime
 }
 
 // SetupSaveProductTracking updates the user object modified uers
-func (p *ProductTracking) SetupSaveProductTracking(tenantID string) {
+func (p *ProductTracking) SetupSaveProductTracking() {
 	eventTime := time.Now().UTC()
 	if p.ID == "" {
-		p.ID = bson.NewObjectId().Hex()
+		p.ID = uuid.NewV4().String()
 	}
 
 	if p.DateCreated.IsZero() {
@@ -205,16 +170,15 @@ func (p *ProductTracking) CheckAndValidateProductPrices() {
 
 // AmazonResult returns history formated as an amazon payload
 type AmazonResult struct {
-	TimeStamp      int64   `json:"timestamp" bson:"-"`
-	Domain         string  `json:"domain" bson:"-"`
-	Title          string  `json:"title" bson:"-"`
-	RegularAmount  float64 `json:"regularPrice" bson:"-"`
-	SaleAmount     float64 `json:"salePrice" bson:"-"`
-	ShippingAmount float64 `json:"shippingPrice" bson:"-"`
-	PathName       string  `json:"pathname" bson:"-"`
-	Message        string  `json:"message" bson:"-"`
-	RetryCount     int     `json:"retryCount" bson:"-"`
-
+	TimeStamp                    int64   `json:"timestamp" bson:"-"`
+	Domain                       string  `json:"domain" bson:"-"`
+	Title                        string  `json:"title" bson:"-"`
+	RegularAmount                float64 `json:"regularPrice" bson:"-"`
+	SaleAmount                   float64 `json:"salePrice" bson:"-"`
+	ShippingAmount               float64 `json:"shippingPrice" bson:"-"`
+	PathName                     string  `json:"pathname" bson:"-"`
+	Message                      string  `json:"message" bson:"-"`
+	RetryCount                   int     `json:"retryCount" bson:"-"`
 	AmazonFees                   float64 `json:"amazonFees" bson:"-"`
 	Count                        int     `json:"count" bson:"-"`
 	Condition                    string  `json:"condition" bson:"-"`

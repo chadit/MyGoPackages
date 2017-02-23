@@ -31,7 +31,7 @@ func GetProductsByASIN(asin, amazonSellerID, amazonAuthToken, amazonRegion, amaz
 	// calls MWS to find product by keyword
 	response := getMatchingProductForASIN(asin)
 	if response == nil {
-		return productGroupings, errors.New("parser : no response from MWS ProductsByASIN")
+		return productGroupings, fmt.Errorf("parser : no response from MWS ProductsByASIN : %s", asin)
 	}
 
 	// parse that response into an array of ProductTracking items
